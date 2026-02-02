@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+    .clients {
+    padding: 80px 20px;
+    background: #000;
+    color: white;
+    text-align: center;
+}
+
+.section-title h2 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.section-title p {
+    color: #ccc;
+}
+
+.stats-grid {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 30px;
+}
+
+.stat-card {
+    background: #111;
+    padding: 35px;
+    border-radius: 15px;
+    transition: 0.4s;
+    border: 1px solid #222;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 25px #ffc10755;
+}
+
+.stat-icon {
+    font-size: 40px;
+    color: #ffc107;
+    margin-bottom: 15px;
+}
+
+.stat-number {
+    font-size: 38px;
+    font-weight: bold;
+    color: #ffc107;
+}
+
+.stat-label {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+</style>
+
+</head>
+<body>
+    <section class="clients" id="clients">
+    <div class="section-title">
+        <h2>Our Reach & Impact</h2>
+        <p>Trusted by industry leaders across the globe</p>
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <i class="fas fa-calendar-alt stat-icon"></i>
+            <div class="stat-number">
+                <span class="counter" data-year="2015">0</span>+
+            </div>
+            <div class="stat-label">Years Experience</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fas fa-truck stat-icon"></i>
+            <div class="stat-number">
+                <span class="counter" data-target="1000">0</span>+
+            </div>
+            <div class="stat-label">Carriers</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fas fa-map-marked-alt stat-icon"></i>
+            <div class="stat-number">
+                <span class="counter" data-target="48">0</span>
+            </div>
+            <div class="stat-label">States Covered</div>
+        </div>
+
+        <div class="stat-card">
+            <i class="fas fa-box-open stat-icon"></i>
+            <div class="stat-number">
+                <span class="counter" data-target="8000">0</span>+
+            </div>
+            <div class="stat-label">Loads Delivered</div>
+        </div>
+
+    </div>
+</section>
+
+</body>
+<script>
+    const counters = document.querySelectorAll(".counter");
+
+const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+const animateCounter = (counter) => {
+
+    let target;
+
+    // Experience auto calculate
+    if (counter.dataset.year) {
+        target = new Date().getFullYear() - counter.dataset.year;
+    } else {
+        target = parseInt(counter.dataset.target);
+    }
+
+    let start = 0;
+    const duration = 2000;
+    const startTime = performance.now();
+
+    const update = (currentTime) => {
+
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        const easedProgress = easeOut(progress);
+        const value = Math.floor(easedProgress * target);
+
+        counter.textContent = value.toLocaleString();
+
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    };
+
+    requestAnimationFrame(update);
+};
+
+
+// Scroll Observer
+const observer = new IntersectionObserver(entries => {
+
+    entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+            entry.target.querySelectorAll(".counter").forEach(counter => {
+                animateCounter(counter);
+            });
+
+            observer.unobserve(entry.target);
+        }
+
+    });
+
+}, { threshold: 0.4 });
+
+observer.observe(document.querySelector(".clients"));
+
+</script>
+</html>
